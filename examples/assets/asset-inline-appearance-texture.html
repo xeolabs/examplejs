@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+
+    <title>SceneHub Inline Appearance with Texture</title>
+
+    <script src="http://scenehub.github.io/scenehub/api/v0/scenehub.js"></script>
+</head>
+
+<body>
+<script>
+
+    //  Inline Appearance with Texture
+
+    var scenehub = new SceneHub();
+
+    var scene = scenehub.createScene({
+        objects:[
+            {
+                useGeometry:"prims.box",
+
+                // Inline appearance with texture
+                appearance:{
+                    material:{
+                        baseColor:{
+                            r:1,
+                            g:1,
+                            b:1,
+                            a:1
+                        }
+                    },
+                    texture:{
+                        layers:[
+                            {
+                                src:"http://scenehub.github.com/scenehub-assets/assets/appearance/heroes/superman.jpg",
+                                blendMode:"multiply"
+                            }
+                        ]
+                    }
+                },
+                scale:{
+                    x:10,
+                    y:10,
+                    z:10
+                },
+                rotate:{
+                    x:1,
+                    y:1,
+                    z:1,
+                    angle:-20
+                }
+            }
+        ]
+    });
+
+</script>
+</body>
+</html>

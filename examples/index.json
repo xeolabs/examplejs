@@ -1,0 +1,186 @@
+[
+    {
+        "title":"Assets",
+        "tags":["asset"],
+        "desc":"Assets are reusable components within SceneHub",
+        "nodes":[
+            {
+                "title":"Use an asset from SceneHub",
+                "tags":["repository"],
+                "desc":"How to reference assets in the SceneHub repository",
+                "nodes":[
+                    {
+                        "title":"Use a scene from SceneHub",
+                        "tags":["scene"],
+                        "path":""
+                    },
+                    {
+                        "title":"Use an object from SceneHub",
+                        "tags":["object"],
+                        "path":"assets/asset-repo-object.html"
+                    },
+                    {
+                        "title":"Use geometry and appearance from SceneHub",
+                        "tags":["material", "geometry"],
+                        "path":"assets/asset-repo-material-geometry.html"
+                    },
+                    {
+                        "title":"Use a shader from SceneHub",
+                        "tags":["shader"],
+                        "path":""
+                    }
+                ]
+            },
+
+            {
+                "title":"Create asset in a library",
+                "tags":["library"],
+                "desc":"Libraries hold assets in memory",
+                "nodes":[
+                    {
+                        "title":"Create geometry in library",
+                        "tags":["geometry"],
+                        "path":"assets/asset-library-geometry.html"
+                    },
+                    {
+                        "title":"Create an appearance in a library, without texture",
+                        "tags":["appearance"],
+                        "path":""
+                    },
+                    {
+                        "title":"Create an appearance in a library, with texture",
+                        "tags":["appearance", "texture"],
+                        "path":""
+                    },
+                    {
+                        "title":"Create a shader in a library",
+                        "tags":["shader"],
+                        "path":""
+                    }
+                ]
+            },
+            {
+                "title":"Define an asset inline",
+                "tags":["inline"],
+                "desc":"How to define assets inline within your scene definitions",
+                "nodes":[
+                    {
+                        "title":"Define geometry inline",
+                        "tags":["geometry"],
+                        "path":"assets/asset-inline-geometry.html"
+                    },
+                    {
+                        "title":"Define appearance inline, without texture",
+                        "tags":["appearance"],
+                        "path":"assets/asset-inline-appearance.html"
+                    },
+                    {
+                        "title":"Define appearance inline, with texture",
+                        "tags":["appearance", "texture"],
+                        "path":"assets/asset-inline-appearance-texture.html"
+                    },
+                    {
+                        "title":"Define shader inline",
+                        "tags":["shader"],
+                        "path":"assets/asset-inline-shader.html"
+                    }
+                ]
+            },
+            {
+                "title":"Configure a custom asset source",
+                "tags":["config"],
+                "desc":"How to override SceneHub's default asset source.",
+                "nodes":[
+                    {
+                        "title":"Use different asset repository",
+                        "tags":["repo"],
+                        "path":""
+                    },
+                    {
+                        "title":"Use custom asset loader",
+                        "tags":["loader"],
+                        "path":""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title":"Objects",
+        "desc":"Objects are the entities within your scene",
+        "nodes":[
+            {
+                "title":"Object ",
+                "desc":"How to define and manipulate object hierarchies.",
+                "nodes":[
+                    {
+                        "title":"Parent object with rotating child",
+                        "path":""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title":"Canvas",
+        "desc":"Miscellaneous canvas use cases",
+        "nodes":[
+            {
+                "title":"XX",
+                "nodes":[
+                    {
+                        "title":"Show GitHub 'Fork me' ribbon on canvas",
+                        "path":""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title":"Cameras",
+        "desc":"How to define and manipulate cameras",
+        "nodes":[
+
+            {
+                "title":"Perspective camera",
+                "path":""
+            },
+            {
+                "title":"Orthographic camera",
+                "path":""
+            }
+        ]
+    },
+    {
+        "title":"Lighting",
+        "desc":"How to define lights",
+        "nodes":[
+            {
+                "title":"Directional lights in World-space",
+                "path":""
+            },
+            {
+                "title":"Positional lights in World-space",
+                "path":""
+            },
+            {
+                "title":"Directional lights in View-space",
+                "path":""
+            },
+            {
+                "title":"Positional lights in View-space",
+                "path":""
+            }
+        ]
+    },
+    {
+        "title":"Content spaces",
+        "desc":"",
+        "nodes":[
+            {
+                "title":"World, view and sky spaces",
+                "path":""
+            }
+        ]
+    }
+]

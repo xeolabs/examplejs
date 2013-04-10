@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+
+    <title>SceneHub Example</title>
+
+    <script src="http://scenehub.github.io/scenehub/api/v0/scenehub.js"></script>
+</head>
+
+<body>
+<script>
+
+    var scenehub = new SceneHub();
+
+    var scene = scenehub.createScene({
+
+        camera:{
+            eye:{
+                z:-100
+            }
+        },
+
+        objects:[
+            // Group object
+            {
+                translate:{
+                    x:0,
+                    y:0,
+                    z:0
+                },
+
+                objects:[
+                    // A child object
+                    {
+                        id:"foo",
+                        useGeometry:"prims.box",
+                        useAppearance:"heroes.superman",
+                        scale:{
+                            x:10,
+                            y:10,
+                            z:10
+                        },
+                        rotate:{
+                            x:1,
+                            y:1,
+                            z:1,
+                            angle:30
+                        },
+                        translate:{
+                            x:0,
+                            y:0,
+                            z:0
+                        }
+                    }
+                ]
+            }
+        ]
+    });
+
+    // on() is used to listen for data changes on scene elements.
+    // This is the primary way to read data from SceneHub.
+    scene.on("objects.foo", function (foo) {
+
+        var angle = 0;
+
+        scene.on("tick", function () {
+            foo.set({
+                rotate:{
+                    angle:angle += 0.5
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>

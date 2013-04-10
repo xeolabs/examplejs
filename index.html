@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>SceneHub - Intro</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <script src="lib/jquery-lib.1.7.1.min.js"></script>
+
+    <script src="editor/js/rawinflate.js"></script>
+    <script src="editor/js/rawdeflate.js"></script>
+
+    <link href="http://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet" type="text/css">
+    <link rel="stylesheet"
+          href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|Droid+Sans+Mono&v2">
+
+    <link href="css/styles.css" rel="stylesheet"/>
+    <style>
+        p.sectionHeading {
+            font-weight: bold;
+            font-size: 20px;
+            padding-bottom: 20px;
+            padding-top: 15px;
+        }
+
+        p.bulletHeading {
+            font-weight: bold;
+            padding-top: 0px;
+            padding-bottom: 5px;
+        }
+
+        p.bullet {
+            padding-top: 0;
+            padding-bottom: 15px;
+            margin-top: 0px;
+            /*line-height: 20px;*/
+            /*color: #2a2a2a;            */
+        }
+
+        p {
+            padding-top: 0;
+
+            margin-top: 0px;
+            line-height: 20px;
+            color: #2a2a2a;
+            /*font: 400 14px/1.4 "Open Sans", sans-serif;*/
+        }
+
+        .col {
+            background-image: url('images/column.png');
+            background-repeat: no-repeat;
+            background-color: white;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 10px;
+            padding-top: 10px;
+            padding-bottom: 40px;
+            overflow: auto;
+        }
+
+        .left {
+            float: left;
+            width: auto;
+            padding: 10px;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        .right {
+            padding-left: 25px;
+            padding-right: 25px;
+            padding-top: 10px;
+            overflow: hidden;
+            margin-left: 250px;
+        }
+
+        #editor {
+            width: 100%;
+            height: 800px;
+            margin-right: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="col left">
+        <ul id="examples"></ul>
+    </div>
+    <div class="col right" id="editorCol">
+    </div>
+
+</div>
+
+<script>
+
+
+    // loadExample("examples/assets/asset-inline-appearance.html");
+
+    jQuery(document).ready(
+            function ($) {
+
+                var n = 0;
+
+                $.getJSON('examples/index.json',
+                        function (data) {
+
+                            for (var i = 0, len = data.length; i < len; i++) {
+
+                                var section = data[i];
+                                var sectionElem = $("#examples").append("<h2>" + section.title + "</h2>");
+
+                                if (section.desc) {
+                                    sectionElem.append("<p class='desc'>" + section.desc + "</p>");
+                                }
+
+                                var subSections = section.nodes;
+                                if (subSections) {
+                                    for (var j = 0, lenj = subSections.length; j < lenj; j++) {
+                                        var subSection = subSections[j];
+                                        var subSectionElem = $(sectionElem).append("<h3>" + subSection.title + "</h3>");
+
+                                        var subSubSections = subSection.nodes;
+                                        if (subSubSections) {
+                                            for (var k = 0, lenk = subSubSections.length; k < lenk; k++) {
+
+                                                (function () {
+
+                                                    var subSubSection = subSubSections[k];
+
+                                                    var p = subSectionElem.append("<p>");
+                                                    var a = p.append("<a id='a" + n + "' href=''>" + subSubSection.title + "</a>");
+
+                                                    $("#a" + n).click(
+                                                            function (e) {
+                                                                e.preventDefault();
+
+                                                                if (subSubSection.path) {
+                                                                    load(subSubSection.path);
+                                                                }
+
+                                                                return true;
+                                                            });
+
+                                                    n++;
+                                                })();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+            });
+
+    function load(path) {
+        $.get("examples/" + path,
+                function (data) {
+                    var url = "http://scenehub.org/editor/index.html#B/" + encode(data);
+//                    var win = window.open(url, '_newtab');
+//                    win.focus();
+
+                    $("#editorCol").html("<iframe id='editor' src='" + url + "'></iframe>");
+
+//                    var f = document.getElementById('editor');
+//                    f.src = url;
+//                    f.src = f.src;
+                });
+    }
+
+    function encode(string) {
+        return window.btoa(RawDeflate.deflate(string));
+
+    }
+
+</script>
+</body>
+</html>
