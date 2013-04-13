@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>SceneHub - Intro</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link href="../css/styles.css" rel="stylesheet"/>
+
+    <script src="../lib/jquery-lib.1.7.1.min.js"></script>
+
+    <!-- ZIP deflation lib -->
+    <script src="../editor/js/rawdeflate.js"></script>
+
+    <!-- Tag cloud -->
+    <script src="../js/tagMenu.js"></script>
+
+    <style>
+
+        p {
+            padding-top: 0;
+            margin-top: 0px;
+            line-height: 20px;
+            color: #2a2a2a;
+        }
+
+        .col {
+            background-color: white;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            overflow: hidden;
+        }
+
+        .footer {
+            width: 100%;
+            height: 30px;
+            background: black;
+            /*margin-right: 20px;*/
+        }
+
+        .left {
+            float: left;
+            width: auto;
+            height: 100%;
+            padding: 10px;
+            overflow: scroll;
+            margin: auto;
+        }
+
+        .right {
+            /*padding-left: 25px;*/
+            /*padding-right: 25px;*/
+            /*padding-top: 10px;*/
+            overflow: hidden;
+            margin-left: 250px;
+            height: 100%;
+
+            background: #000000 no-repeat center center;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            /*margin-right: 20px;*/
+        }
+
+        #titleLink {
+            font-size: 40px;
+            line-height: 1.5;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #caption {
+            font-size: 20px;
+            line-height: 1.5;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-top: 0px;
+            padding-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+
+    <div  class="container">
+        <div class="col left">
+
+            <div id="title" class="title"><a id="titleLink" href="">My Project</a></div>
+            <div id="caption">Example Explorer</div>
+            <div id="tagsContainer">
+                <p class="containerTitle">Filter</p>
+
+                <p class="operation">Show examples with <a href=""><span
+                        class="unselected">all</span></a>&nbsp;/&nbsp;<a
+                        href=""><span class="selected">any</span></a> of these tags:</p>
+
+                <div id="tags" style="height:auto;">
+                </div>
+                <a href="">Clear</a>&nbsp;|&nbsp;<a href="">Select all</a>
+            </div>
+            <div id="pageMenuContainer">
+                <p class="containerTitle">13 examples</p>
+
+                <div id="pageMenu"></div>
+            </div>
+        </div>
+        <div class="col right" id="editorCol">
+        </div>
+    </div>
+
+
+
+    <!--<div class="footer"></div>-->
+
+
+<script>
+
+var requestTags = null;
+var requestExample = null;
+
+
+var selectedExample;
+
+jQuery(document).ready(
+        function ($) {
+
+            $("#title").click(function () {
+                send({ call:"home" });
+            });
+
+            var client;
+
+            // Handle messages from TweakJS client
+            addEventListener("message",
+                    function (event) {
+                        var data = JSON.parse(event.data);
+                        switch (data.call) {
+                            case "connect":
+                                // Accept connection
+                                client = event;
+                                send({ call:"connected" });
+                                break;
+                            case "configure":
+                                // New configuration
+                                configure(data);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+
+            function send(call) {
+                client.source.postMessage(JSON.stringify(call), client.origin);
+            }
+
+            function configure(configs) {
+
+                // Set title
+                if (configs.title) {
+                    $("#titleLink").text(configs.title);
+                }
+
+                // Set Caption
+                if (configs.caption) {
+                    $("#caption").text(configs.caption);
+                }
+
+                // Select an example
+                if (configs.page) {
+                    loadPage(configs, configs.page);
+                }
+
+                // Build menu
+                if (configs.index) {
+                    var index = configs.index;
+
+                    // Extract tags from data index
+                    var indexTags = getIndexTags(index);
+
+                    // Build tag menu
+                    var tagMenu = new TagMenu($("#tags"), {
+                        tags:indexTags,
+                        selectedTags:configs.tags,
+                        selection:function (selectedTags) {
+
+                            // Tag cloud selection/deselection in the tag menu                            
+                            buildPageMenu(configs, selectedTags);
+
+                            // Notify client
+                            send({ call:"tags", tags:selectedTags });
+                        }
+                    });
+                }
+
+                // Initial page menu and select tags, if any
+                buildPageMenu(configs, configs.tags);
+            }
+
+
+            // Finds tags in page index
+            function getIndexTags(index) {
+                var tags = {};
+                for (var i = 0, len = index.length; i < len; i++) {
+                    var section = index[i];
+                    if (section.tags) {
+                        for (var n = 0, lenn = section.tags.length; n < lenn; n++) {
+                            tags[section.tags[n]] = true;
+                        }
+                    }
+                    var subSections = section.nodes;
+                    if (subSections) {
+                        for (var j = 0, lenj = subSections.length; j < lenj; j++) {
+                            var subSection = subSections[j];
+
+                            if (subSection.tags) {
+                                for (var n = 0, lenn = subSection.tags.length; n < lenn; n++) {
+                                    tags[subSection.tags[n]] = true;
+                                }
+                            }
+                            var subSubSections = subSection.nodes;
+                            if (subSubSections) {
+                                for (var k = 0, numSubSubSections = subSubSections.length; k < numSubSubSections; k++) {
+                                    var subSubSection = subSubSections[k];
+
+                                    if (subSubSection.tags) {
+                                        for (var n = 0, lenn = subSubSection.tags.length; n < lenn; n++) {
+                                            tags[subSubSection.tags[n]] = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return tags;
+            }
+
+            function buildPageMenu(configs, tags) {
+                var index = configs.index;
+                filterIndex(index, tags);
+                var pageMenu = $("#pageMenu");
+                pageMenu.html("");
+                var n = 0; // For unique hyperlinks
+                for (var iSection = 0, lenSections = index.length; iSection < lenSections; iSection++) {
+                    var section = index[iSection];
+                    if (!section._selected && !section._containsSelected) {
+                        continue; // Skip unselected section
+                    }
+                    var sectionElem = pageMenu.append("<h2>" + section.title + "</h2>");
+                    var subSections = section.nodes;
+                    if (subSections) {
+                        for (var iSubSection = 0, lenSubSections = subSections.length; iSubSection < lenSubSections; iSubSection++) {
+                            var subSection = subSections[iSubSection];
+                            if (!subSection._selected && !subSection._containsSelected) {
+                                continue; // Skip unselected subsection
+                            }
+                            var subSectionElem = $(sectionElem).append("<h3>" + subSection.title + "</h3>");
+                            var subSubSections = subSection.nodes;
+                            if (subSubSections) {
+                                for (var iSubSubSection = 0, numSubSubSections = subSubSections.length; iSubSubSection < numSubSubSections; iSubSubSection++) {
+                                    if (!subSubSections[iSubSubSection]._selected && !subSubSections[iSubSubSection]._containsSelected) {
+                                        continue; // Skip unselected page
+                                    }
+                                    (function () {
+                                        var subSubSection = subSubSections[iSubSubSection];
+                                        var p = subSectionElem.append("<p>");
+                                        var id = section._num + "." + subSection._num + "." + subSubSection._num;
+                                        var a = subSectionElem.append("<a class='subSubSection' id='a" + n + "' href=''>" + subSubSection.title + "</a>");
+                                        $("#a" + n).click(
+                                                function (e) {
+                                                    e.preventDefault();
+                                                    if (subSubSection.path) {
+                                                        loadPage(configs, subSubSection.path);
+                                                    }
+                                                    return true;
+                                                });
+                                        n++;
+                                    })();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Marks each node in the page index to indicate if that node or any of its children
+            // currently matches any of the currently existing tags
+            // Unmarks when tags not given
+            function filterIndex(index, tags) {
+                tags = tags || {};
+                // Mark nodes
+                for (var i = 0, len = index.length; i < len; i++) {
+                    var section = index[i];
+                    if (section.tags && hasTags(section.tags, tags)) {
+                        section._selected = true;
+                    } else {
+                        section._selected = false;
+                        section._containsSelected = false;
+                    }
+                    var subSections = section.nodes;
+                    if (subSections) {
+                        for (var j = 0, lenj = subSections.length; j < lenj; j++) {
+                            var subSection = subSections[j];
+                            if (section._selected || (subSection.tags && hasTags(subSection.tags, tags))) {
+                                subSection._selected = true;
+                                section._containsSelected = true;
+                            } else {
+                                subSection._selected = false;
+                                subSection._containsSelected = false;
+                            }
+                            var subSubSections = subSection.nodes;
+                            if (subSubSections) {
+                                for (var k = 0, numSubSubSections = subSubSections.length; k < numSubSubSections; k++) {
+                                    var subSubSection = subSubSections[k];
+                                    if (subSection._selected || (subSubSection.tags && hasTags(subSubSection.tags, tags))) {
+                                        subSubSection._selected = true;
+                                        subSection._containsSelected = true;
+                                        section._containsSelected = true;
+                                    } else {
+                                        subSubSection._selected = false;
+                                        subSubSection._containsSelected = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Tests if any tag in the given list is also in the given map
+            function hasTags(test, tags) {
+                for (var i = 0, len = test.length; i < len; i++) {
+                    if (tags[test[i]]) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // Loads a page on given path, relative to base path in configs
+            function loadPage(configs, page) {
+
+                $("#editorCol").css("background-image", "url(../images/spinners/01c-animated.gif)");
+
+                // Load page text
+                $.get((configs.pageBase || "") + "/" + page,
+                        function (data) {
+                            // Feed page text to editor via editor's URL
+                            var url = "/home/lindsay/xeolabs/projects/examplejs/editor/index.html#B/" + encode(data);
+                            $("#editorCol").html("<iframe id='editor' src='" + url + "'></iframe>");
+                            // Notify client
+                            send({ call:"page", page:page });
+                        });
+            }
+
+            // Encodes text for URL
+            function encode(string) {
+                return window.btoa(RawDeflate.deflate(string));
+            }
+        });
+
+</script>
+</body>
+</html>
