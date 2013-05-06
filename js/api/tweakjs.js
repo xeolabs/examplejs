@@ -15,7 +15,7 @@ var TweakJS = function (cfg) {
 
     var basePath = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
 
-    this._iframe.src = basePath + "/../index.html";
+    this._iframe.src = basePath + "http://xeolabs.github.io/examplejs/index.html";
 
     // True once connected
     this._connected = false;
