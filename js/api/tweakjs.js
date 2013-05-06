@@ -12,7 +12,10 @@ var TweakJS = function (cfg) {
     this._iframe.style.height = "100%";
     this._iframe.style.width = "100%";
     document.body.appendChild(this._iframe);
-    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/html/index.html";
+
+    var basePath = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
+
+    this._iframe.src = basePath + "/../../index.html";
 
     // True once connected
     this._connected = false;

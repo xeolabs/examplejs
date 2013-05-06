@@ -229,7 +229,7 @@ var TweakJS = function (cfg) {
     this._iframe.style.height = "100%";
     this._iframe.style.width = "100%";
     document.body.appendChild(this._iframe);
-    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/html/index.html";
+    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
 
     // True once connected
     this._connected = false;

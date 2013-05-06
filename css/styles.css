@@ -153,6 +153,14 @@ h3 {
     padding-bottom: 6px;
 }
 
+p.sectionTip {
+    padding-left: 10px;
+}
+
+p.subSectionTip {
+    padding-left: 10px;
+}
+
 a.subSubSection {
     padding-left: 27px;
     background: url("../images/bullet-point.png") no-repeat 15px 2px !important;
@@ -160,14 +168,7 @@ a.subSubSection {
 
 #tagsContainer {
     width: 380px;
-    background: #f5f5f5;
-    padding-top: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 5px;
-    border: 1px solid lightGrey;
-    border-radius: 4px;
-    margin-top: 25px;
+    background: #ffffff;
 }
 
 #tagsContainer p.operation {

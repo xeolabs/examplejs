@@ -6,17 +6,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <link href="../css/styles.css" rel="stylesheet"/>
+    <link href="css/styles.css" rel="stylesheet"/>
 
-    <script src="../lib/jquery-lib.1.7.1.min.js"></script>
+    <script src="lib/jquery-lib.1.7.1.min.js"></script>
 
     <!-- ZIP deflation lib -->
-    <script src="../editor/js/rawdeflate.js"></script>
+    <script src="lib/rawdeflate.js"></script>
 
     <!-- Tag cloud -->
-    <script src="../js/tagMenu.js"></script>
+    <script src="lib/tagMenu.js"></script>
 
     <style>
+
+        body {
+            padding: 0;
+        }
 
         p {
             padding-top: 0;
@@ -95,42 +99,40 @@
 <body>
 
 
-    <div  class="container">
-        <div class="col left">
+<div class="container">
+    <div class="col left">
 
-            <div id="title" class="title"><a id="titleLink" href="">My Project</a></div>
-            <div id="caption">Example Explorer</div>
-            <div id="tagsContainer">
-                <p class="containerTitle">Filter</p>
+        <div id="title" class="title"><a id="titleLink" href="">My Project</a></div>
+        <div id="caption">examples</div>
+        <div id="tagsContainer">
 
-                <p class="operation">Show examples with <a href=""><span
-                        class="unselected">all</span></a>&nbsp;/&nbsp;<a
-                        href=""><span class="selected">any</span></a> of these tags:</p>
+            <p class="operation">Show examples with <a href=""><span
+                    class="unselected">all</span></a>&nbsp;/&nbsp;<a
+                    href=""><span class="selected">any</span></a> of these tags:</p>
 
-                <div id="tags" style="height:auto;">
-                </div>
-                <a href="">Clear</a>&nbsp;|&nbsp;<a href="">Select all</a>
+            <div id="tags" style="height:auto;">
             </div>
-            <div id="pageMenuContainer">
-                <p class="containerTitle">13 examples</p>
-
-                <div id="pageMenu"></div>
-            </div>
+            <a id="deselectAll">Clear</a>&nbsp;|&nbsp;<a id="selectAll">Select all</a>
         </div>
-        <div class="col right" id="editorCol">
+        <div id="pageMenuContainer">
+            <p class="containerTitle">13 examples</p>
+
+            <div id="pageMenu"></div>
         </div>
     </div>
+    <div class="col right" id="editorCol">
+    </div>
+</div>
 
 
-
-    <!--<div class="footer"></div>-->
+<!--<div class="footer"></div>-->
 
 
 <script>
 
 var requestTags = null;
 var requestExample = null;
-
+var editor = "html";
 
 var selectedExample;
 
@@ -178,6 +180,11 @@ jQuery(document).ready(
                     $("#caption").text(configs.caption);
                 }
 
+                // Set editor
+                if (configs.editor) {
+                    editor = configs.editor;
+                }
+
                 // Select an example
                 if (configs.page) {
                     loadPage(configs, configs.page);
@@ -202,6 +209,14 @@ jQuery(document).ready(
                             // Notify client
                             send({ call:"tags", tags:selectedTags });
                         }
+                    });
+
+                    $("#deselectAll").click(function () {
+                        tagMenu.deselectAll();
+                    });
+
+                    $("#selectAll").click(function () {
+                        tagMenu.selectAll();
                     });
                 }
 
@@ -260,6 +275,8 @@ jQuery(document).ready(
                         continue; // Skip unselected section
                     }
                     var sectionElem = pageMenu.append("<h2>" + section.title + "</h2>");
+                  //  pageMenu.append("<p class='sectionTip'>" + section.tip || "" + "</p>");
+
                     var subSections = section.nodes;
                     if (subSections) {
                         for (var iSubSection = 0, lenSubSections = subSections.length; iSubSection < lenSubSections; iSubSection++) {
@@ -268,6 +285,8 @@ jQuery(document).ready(
                                 continue; // Skip unselected subsection
                             }
                             var subSectionElem = $(sectionElem).append("<h3>" + subSection.title + "</h3>");
+                       //     $(sectionElem).append("<p class='subSectionTip'>" + subSection.tip || "" + "</p>");
+
                             var subSubSections = subSection.nodes;
                             if (subSubSections) {
                                 for (var iSubSubSection = 0, numSubSubSections = subSubSections.length; iSubSubSection < numSubSubSections; iSubSubSection++) {
@@ -279,6 +298,7 @@ jQuery(document).ready(
                                         var p = subSectionElem.append("<p>");
                                         var id = section._num + "." + subSection._num + "." + subSubSection._num;
                                         var a = subSectionElem.append("<a class='subSubSection' id='a" + n + "' href=''>" + subSubSection.title + "</a>");
+
                                         $("#a" + n).click(
                                                 function (e) {
                                                     e.preventDefault();
@@ -353,17 +373,34 @@ jQuery(document).ready(
             // Loads a page on given path, relative to base path in configs
             function loadPage(configs, page) {
 
-                $("#editorCol").css("background-image", "url(../images/spinners/01c-animated.gif)");
+                var pageUrl = (configs.pageBase || "") + page;
 
-                // Load page text
-                $.get((configs.pageBase || "") + "/" + page,
-                        function (data) {
-                            // Feed page text to editor via editor's URL
-                            var url = "/home/lindsay/xeolabs/projects/examplejs/editor/index.html#B/" + encode(data);
-                            $("#editorCol").html("<iframe id='editor' src='" + url + "'></iframe>");
-                            // Notify client
-                            send({ call:"page", page:page });
+                switch (editor) {
+                    case "htmleditor":
+                        //  $("#editorCol").css("background-image", "url(../images/spinners/01c-animated.gif)");
+                        // Load page text
+                        $.get(pageUrl,
+                                function (data) {
+                                    // Feed page text to editor via editor's URL
+                                    var url = "editors/htmleditor/index.html#B/" + encode(data);
+                                    $("#editorCol").html("<iframe id='editor' src='" + url + "'></iframe>");
+                                    // Notify client
+                                    send({
+                                        call:"page",
+                                        page:page
+                                    });
+                                });
+                        break;
+
+                    case "html":
+                        $("#editorCol").html("<iframe id='editor' src='" + pageUrl + "'></iframe>");
+                        // Notify client
+                        send({
+                            call:"page",
+                            page:page
                         });
+                        break;
+                }
             }
 
             // Encodes text for URL
