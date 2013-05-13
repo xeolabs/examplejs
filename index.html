@@ -9,12 +9,16 @@
     <link href="css/styles.css" rel="stylesheet"/>
 
     <script src="lib/jquery-lib.1.7.1.min.js"></script>
+    <script src="lib/jquery.resize.js"></script>
 
     <!-- ZIP deflation lib -->
     <script src="lib/rawdeflate.js"></script>
 
     <!-- Tag cloud -->
     <script src="lib/tagMenu.js"></script>
+
+    <link href="css/prettify.css" rel="stylesheet"/>
+    <script src="lib/prettify.js"></script>
 
     <style>
 
@@ -54,7 +58,7 @@
             float: left;
             width: auto;
             height: 100%;
-            padding: 10px;
+            padding: 15px;
             overflow: scroll;
             margin: auto;
         }
@@ -67,12 +71,14 @@
             margin-left: 250px;
             height: 100%;
 
-            background: #000000 no-repeat center center;
+            /*background: #000000 no-repeat center center;*/
         }
 
         #editor {
             width: 100%;
             height: 100%;
+            overflow-y: hidden;
+            border: 0;
             /*margin-right: 20px;*/
         }
 
@@ -87,12 +93,95 @@
 
         #caption {
             font-size: 20px;
+
             line-height: 1.5;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             padding-top: 0px;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
+
+        #showCode {
+            position: absolute;
+            top: 60px;
+            left: 435px;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 3px;
+            padding-left: 6px;
+            padding-right: 6px;
+            margin-top: 5px;
+            background: #657CC4;
+            color: white;
+            border: 1px solid white;
+            z-index: 10000;
+        }
+
+        #liveView {
+            display: none;
+            /*z-index: -100;*/
+        }
+
+        #codeView {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            display: none;
+            opacity: 0.7;
+            z-index: 9000;
+            overflow-y: scroll;
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        #codeViewSrc {
+            padding: 10px;
+            padding-top: 40px;
+            padding-bottom: 60px;
+            height: 100%;
+            width: 100%;
+        }
+
+        #exampleCaption {
+            min-width: 400px;
+            top: 0px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border: 1px white solid;
+
+            position: absolute;
+            font-size: 20px;
+            background: black;
+            color: white;
+            padding-bottom: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-weight: bold;
+            z-index: 10000;
+            opacity: 0.4;
+            margin-left: 10px;
+            margin-bottom: 20px;
+            width: auto;
+            -webkit-box-shadow: 0 8px 6px -6px black;
+            -moz-box-shadow: 0 8px 6px -6px black;
+            box-shadow: 0 8px 6px -6px black;
+        }
+
+        #exampleCaptionTitle {
+            font-size: 30px;
+            color: white;
+            padding-bottom: 20px;
+            padding-top:10px;
+        }
+
+        #exampleCaptionDescription {
+            color: white;
+            padding-bottom: 15px;
+        }
+
+
 
     </style>
 </head>
@@ -103,24 +192,33 @@
     <div class="col left">
 
         <div id="title" class="title"><a id="titleLink" href="">My Project</a></div>
-        <div id="caption">examples</div>
+        <div id="caption">Example Browser</div>
         <div id="tagsContainer">
+            <p class="operation">Select some topics:</p>
 
-            <p class="operation">Show examples with <a href=""><span
-                    class="unselected">all</span></a>&nbsp;/&nbsp;<a
-                    href=""><span class="selected">any</span></a> of these tags:</p>
-
-            <div id="tags" style="height:auto;">
+            <div id="tags" style="height:auto; padding-bottom:15px;">
             </div>
             <a id="deselectAll">Clear</a>&nbsp;|&nbsp;<a id="selectAll">Select all</a>
         </div>
         <div id="pageMenuContainer">
-            <p class="containerTitle">13 examples</p>
-
             <div id="pageMenu"></div>
         </div>
     </div>
     <div class="col right" id="editorCol">
+        <a id="showCode">SHOW CODE</a>
+
+        <div id="liveView">
+        </div>
+        <div id="codeView">
+            <pre class="prettyprint lang-html" id="codeViewSrc">
+            </pre>
+        </div>
+        <!--<div id="exampleCaption">-->
+            <!--<p id="exampleCaptionTitle">This is the example title</p>-->
+
+            <!--<p id="exampleCaptionDescription">Example description, describes the example and all it's about etc.</p>-->
+            <!--<p id="showSource"><a id="showCodeSwitch">[Show Code]</a></p>-->
+        <!--</div>-->
     </div>
 </div>
 
@@ -136,12 +234,59 @@ var editor = "html";
 
 var selectedExample;
 
+var editorCol = $("#editorCol");
+var liveView = $("#liveView");
+var codeView = $("#codeView");
+var codeViewSrc = $("#codeViewSrc");
+var showCodeButton = $("#showCode");
+var codeShown = false;
+
 jQuery(document).ready(
         function ($) {
 
-            $("#title").click(function () {
-                send({ call:"home" });
+            // Synch editor DIV with width of editor column
+
+            codeView.css({
+                width:editorCol.width() + "px"
             });
+
+            $("#editorCol").resize(
+                    function (e) {
+                        var width = e.target.clientWidth;
+                        codeView.css({
+                            width:width + "px"
+                        });
+                    });
+
+            // Project home link
+            $("#title").click(
+                    function () {
+                        send({ call:"home" });
+                    });
+
+            // Code view toggle
+            showCodeButton.hide();
+            showCodeButton.click(
+                    function () {
+                        showCode(!codeShown);
+                    });
+
+            function showCode(show) {
+                if (show) {
+                    codeView.show();
+                    showCodeButton.text("HIDE CODE");
+                    codeShown = true;
+                } else {
+                    codeView.hide();
+                    showCodeButton.text("SHOW CODE");
+                    codeShown = false;
+                }
+                // Notify client
+                send({
+                    call:"codeShown",
+                    codeShown:codeShown
+                });
+            }
 
             var client;
 
@@ -222,6 +367,11 @@ jQuery(document).ready(
 
                 // Initial page menu and select tags, if any
                 buildPageMenu(configs, configs.tags);
+
+                // Show or hide code
+                if (configs.showCode != undefined) {
+                    showCode(configs.showCode);
+                }
             }
 
 
@@ -275,7 +425,7 @@ jQuery(document).ready(
                         continue; // Skip unselected section
                     }
                     var sectionElem = pageMenu.append("<h2>" + section.title + "</h2>");
-                  //  pageMenu.append("<p class='sectionTip'>" + section.tip || "" + "</p>");
+                    //  pageMenu.append("<p class='sectionTip'>" + section.tip || "" + "</p>");
 
                     var subSections = section.nodes;
                     if (subSections) {
@@ -285,7 +435,7 @@ jQuery(document).ready(
                                 continue; // Skip unselected subsection
                             }
                             var subSectionElem = $(sectionElem).append("<h3>" + subSection.title + "</h3>");
-                       //     $(sectionElem).append("<p class='subSectionTip'>" + subSection.tip || "" + "</p>");
+                            //     $(sectionElem).append("<p class='subSectionTip'>" + subSection.tip || "" + "</p>");
 
                             var subSubSections = subSection.nodes;
                             if (subSubSections) {
@@ -383,7 +533,7 @@ jQuery(document).ready(
                                 function (data) {
                                     // Feed page text to editor via editor's URL
                                     var url = "editors/htmleditor/index.html#B/" + encode(data);
-                                    $("#editorCol").html("<iframe id='editor' src='" + url + "'></iframe>");
+                                    $("#editorCol").html("<iframe id='editor' scrolling='no' src='" + url + "'></iframe>");
                                     // Notify client
                                     send({
                                         call:"page",
@@ -393,12 +543,28 @@ jQuery(document).ready(
                         break;
 
                     case "html":
-                        $("#editorCol").html("<iframe id='editor' src='" + pageUrl + "'></iframe>");
-                        // Notify client
-                        send({
-                            call:"page",
-                            page:page
-                        });
+
+                        $.get(pageUrl,
+                                function (data) {
+
+                                    // Update live view
+                                    liveView.html("<iframe id='editor' scrolling='no' src='" + pageUrl + "'></iframe>");
+                                    liveView.show();
+
+                                    // Update code view
+                                    codeViewSrc.text(data);
+                                    codeViewSrc.removeClass("prettyprinted");
+
+                                    prettyPrint();
+
+                                    //showCodeButton.show();
+
+                                    // Notify client
+                                    send({
+                                        call:"page",
+                                        page:page
+                                    });
+                                });
                         break;
                 }
             }
