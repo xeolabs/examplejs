@@ -173,7 +173,7 @@
             font-size: 30px;
             color: white;
             padding-bottom: 20px;
-            padding-top:10px;
+            padding-top: 10px;
         }
 
         #exampleCaptionDescription {
@@ -181,6 +181,10 @@
             padding-bottom: 15px;
         }
 
+        #selectSomeTags {
+            color: white;
+            padding-bottom: 15px;
+        }
 
 
     </style>
@@ -214,12 +218,17 @@
             </pre>
         </div>
         <!--<div id="exampleCaption">-->
-            <!--<p id="exampleCaptionTitle">This is the example title</p>-->
+        <!--<p id="exampleCaptionTitle">This is the example title</p>-->
 
-            <!--<p id="exampleCaptionDescription">Example description, describes the example and all it's about etc.</p>-->
-            <!--<p id="showSource"><a id="showCodeSwitch">[Show Code]</a></p>-->
+        <!--<p id="exampleCaptionDescription">Example description, describes the example and all it's about etc.</p>-->
+        <!--<p id="showSource"><a id="showCodeSwitch">[Show Code]</a></p>-->
         <!--</div>-->
     </div>
+
+
+    <div id="selectSomeTags">Select some tags</div>
+    <div id="selectedExamples">Examples matching selected tags</div>
+
 </div>
 
 
@@ -318,6 +327,11 @@ jQuery(document).ready(
                 // Set title
                 if (configs.title) {
                     $("#titleLink").text(configs.title);
+                }
+
+                // Set title link
+                if (configs.home) {
+                    $("#titleLink").attr("href", configs.home)
                 }
 
                 // Set Caption
