@@ -241,7 +241,12 @@ var requestTags = null;
 var requestExample = null;
 var editor = "html";
 
-var selectedExample;
+// ID map of pages, generated off index
+// selected from when page selected via configs
+var pages = {};
+
+// Set of tags inherited by each page
+var pageTags = {};
 
 var editorCol = $("#editorCol");
 var liveView = $("#liveView");
@@ -249,6 +254,8 @@ var codeView = $("#codeView");
 var codeViewSrc = $("#codeViewSrc");
 var showCodeButton = $("#showCode");
 var codeShown = false;
+
+var tagMenu;
 
 jQuery(document).ready(
         function ($) {
@@ -344,11 +351,6 @@ jQuery(document).ready(
                     editor = configs.editor;
                 }
 
-                // Select an example
-                if (configs.page) {
-                    loadPage(configs, configs.page);
-                }
-
                 // Build menu
                 if (configs.index) {
                     var index = configs.index;
@@ -356,8 +358,11 @@ jQuery(document).ready(
                     // Extract tags from data index
                     var indexTags = getIndexTags(index);
 
+                    // Find pages that have permalink IDs
+                    pages = getIndexPages(index);
+
                     // Build tag menu
-                    var tagMenu = new TagMenu($("#tags"), {
+                    tagMenu = new TagMenu($("#tags"), {
                         tags:indexTags,
                         selectedTags:configs.tags,
                         selection:function (selectedTags) {
@@ -382,12 +387,26 @@ jQuery(document).ready(
                 // Initial page menu and select tags, if any
                 buildPageMenu(configs, configs.tags);
 
+                // Select an example
+                if (configs.page) {
+                    if (pages) {
+                        var page = pages[configs.page];
+                        if (page) {
+                            loadPage(configs, page);
+                            if (page.id) {
+                                var selectedTags = pageTags[page.id];
+                                tagMenu.select(selectedTags);
+                                buildPageMenu(configs, selectedTags);
+                            }
+                        }
+                    }
+                }
+
                 // Show or hide code
                 if (configs.showCode != undefined) {
                     showCode(configs.showCode);
                 }
             }
-
 
             // Finds tags in page index
             function getIndexTags(index) {
@@ -413,7 +432,9 @@ jQuery(document).ready(
                             if (subSubSections) {
                                 for (var k = 0, numSubSubSections = subSubSections.length; k < numSubSubSections; k++) {
                                     var subSubSection = subSubSections[k];
-
+                                    if (subSubSection.id) {
+                                        pageTags[subSubSection.id] = union([section.tags, subSection.tags, subSubSection.tags]);
+                                    }
                                     if (subSubSection.tags) {
                                         for (var n = 0, lenn = subSubSection.tags.length; n < lenn; n++) {
                                             tags[subSubSection.tags[n]] = true;
@@ -426,6 +447,47 @@ jQuery(document).ready(
                 }
                 return tags;
             }
+
+            function union(tagSets) {
+                var tags = {};
+                var tagSet;
+                for (var i = 0, len = tagSets.length; i < len; i++) {
+                    tagSet = tagSets[i];
+                    if (tagSet) {
+                        for (var t in tagSet) {
+                            if (tagSet.hasOwnProperty(t)) {
+                                tags[tagSet[t]] = true;
+                            }
+                        }
+                    }
+                }
+                return tags;
+            }
+
+            // Finds ID'd pages in page index
+            function getIndexPages(index) {
+                var pages = {};
+                for (var i = 0, len = index.length; i < len; i++) {
+                    var section = index[i];
+                    var subSections = section.nodes;
+                    if (subSections) {
+                        for (var j = 0, lenj = subSections.length; j < lenj; j++) {
+                            var subSection = subSections[j];
+                            var subSubSections = subSection.nodes;
+                            if (subSubSections) {
+                                for (var k = 0, numSubSubSections = subSubSections.length; k < numSubSubSections; k++) {
+                                    var subSubSection = subSubSections[k];
+                                    if (subSubSection.id) {
+                                        pages[subSubSection.id] = subSubSection;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return pages;
+            }
+
 
             function buildPageMenu(configs, tags) {
                 var index = configs.index;
@@ -467,7 +529,7 @@ jQuery(document).ready(
                                                 function (e) {
                                                     e.preventDefault();
                                                     if (subSubSection.path) {
-                                                        loadPage(configs, subSubSection.path);
+                                                        loadPage(configs, subSubSection);
                                                     }
                                                     return true;
                                                 });
@@ -535,9 +597,10 @@ jQuery(document).ready(
             }
 
             // Loads a page on given path, relative to base path in configs
-            function loadPage(configs, page) {
+            function loadPage(configs, subSubSection) {
 
-                var pageUrl = (configs.pageBase || "") + page;
+                var path = subSubSection.path;
+                var pageUrl = (configs.pageBase || "") + path;
 
                 switch (editor) {
                     case "htmleditor":
@@ -551,7 +614,7 @@ jQuery(document).ready(
                                     // Notify client
                                     send({
                                         call:"page",
-                                        page:page
+                                        page:subSubSection.id
                                     });
                                 });
                         break;
@@ -576,7 +639,7 @@ jQuery(document).ready(
                                     // Notify client
                                     send({
                                         call:"page",
-                                        page:page
+                                        page:subSubSection.id
                                     });
                                 });
                         break;
