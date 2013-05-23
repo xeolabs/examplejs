@@ -331,8 +331,12 @@ jQuery(document).ready(
 
             function configure(configs) {
 
-                // Set title
-                if (configs.title) {
+                // Set logo
+                if (configs.logo) {
+                    $("#titleLink").html("<img src='" + configs.logo + "/>");
+                } else if (configs.title) {
+
+                    // Set title
                     $("#titleLink").text(configs.title);
                 }
 
