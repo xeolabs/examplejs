@@ -333,7 +333,7 @@ jQuery(document).ready(
 
                 // Set logo
                 if (configs.logo) {
-                    $("#titleLink").html("<img src='" + configs.logo + "/>");
+                    $("#titleLink").append($("<img src='" + configs.logo + "'/>"));
                 } else if (configs.title) {
 
                     // Set title
