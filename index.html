@@ -633,7 +633,7 @@ jQuery(document).ready(
                     case "html":
 
                         var dotIdx = pageUrl.lastIndexOf(".");
-                        var fileType = dotIdx ? pageUrl(dotIdx) : "html";
+                        var fileType = dotIdx ? pageUrl.substring(dotIdx) : "html";
 
                         $.get(pageUrl,
                                 function (data) {
