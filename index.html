@@ -20,6 +20,9 @@
     <link href="css/prettify.css" rel="stylesheet"/>
     <script src="lib/prettify.js"></script>
 
+    <!-- TODO: Make 3rd party dependencies a configurable -->
+    <script src="http://xeolabs.github.io/scenejs/api/latest/scenejs.js"></script>
+
     <style>
 
         body {
@@ -635,6 +638,32 @@ jQuery(document).ready(
                                     // Update live view
                                     liveView.html("<iframe id='editor' scrolling='no' src='" + pageUrl + "'></iframe>");
                                     liveView.show();
+
+                                    // Update code view
+                                    codeViewSrc.text(data);
+                                    codeViewSrc.removeClass("prettyprinted");
+
+                                    prettyPrint();
+
+                                    showCodeButton.show();
+
+                                    // Notify client
+                                    send({
+                                        call:"page",
+                                        page:subSubSection.id
+                                    });
+                                });
+                        break;
+
+                    case "js":
+
+                        $.get(pageUrl,
+                                function (data) {
+
+                                    // TODO: destroy whatever scenes are defined in scenejs
+
+                                    // Update live view
+                                    eval(data);
 
                                     // Update code view
                                     codeViewSrc.text(data);
