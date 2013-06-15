@@ -632,12 +632,24 @@ jQuery(document).ready(
 
                     case "html":
 
+                        var dotIdx = pageUrl.lastIndexOf(".");
+                        var fileType = dotIdx ? pageUrl(dotIdx) : "html";
+
                         $.get(pageUrl,
                                 function (data) {
 
                                     // Update live view
-                                    liveView.html("<iframe id='editor' scrolling='no' src='" + pageUrl + "'></iframe>");
-                                    liveView.show();
+                                    switch (fileType) {
+                                        case "html":
+                                            liveView.html("<iframe id='editor' scrolling='no' src='" + pageUrl + "'></iframe>");
+                                            liveView.show();
+                                            break;
+
+                                        case "js":
+                                            // TODO: clear scene if existing
+                                            eval(data);
+                                            break;
+                                    }
 
                                     // Update code view
                                     codeViewSrc.text(data);
