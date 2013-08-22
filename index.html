@@ -21,7 +21,8 @@
     <script src="lib/prettify.js"></script>
 
     <!-- TODO: Make 3rd party dependencies a configurable -->
-    <script src="http://xeolabs.github.io/scenejs/api/latest/scenejs.js"></script>
+    <!--<script src="http://xeolabs.github.io/scenejs/api/latest/scenejs.js"></script>-->
+    <script src="../scenejs3.0/api/latest/scenejs.js"></script>
 
     <style>
 
@@ -135,7 +136,7 @@
             height: 100%;
             width: 100%;
             display: none;
-            opacity: 0.7;
+            opacity: 1.0;
             z-index: 9000;
             overflow-y: scroll;
             background: white;
@@ -647,7 +648,7 @@ jQuery(document).ready(
 
                                         case "js":
                                             // TODO: clear scene if existing
-                                            eval(data);
+                                         //   $("body").append("<script>" + data + "<\/script>");
                                             break;
                                     }
 
@@ -667,31 +668,7 @@ jQuery(document).ready(
                                 });
                         break;
 
-                    case "js":
 
-                        $.get(pageUrl,
-                                function (data) {
-
-                                    // TODO: destroy whatever scenes are defined in scenejs
-
-                                    // Update live view
-                                    eval(data);
-
-                                    // Update code view
-                                    codeViewSrc.text(data);
-                                    codeViewSrc.removeClass("prettyprinted");
-
-                                    prettyPrint();
-
-                                    showCodeButton.show();
-
-                                    // Notify client
-                                    send({
-                                        call:"page",
-                                        page:subSubSection.id
-                                    });
-                                });
-                        break;
                 }
             }
 
