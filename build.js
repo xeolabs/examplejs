@@ -2,7 +2,7 @@
 
 
 /*
- TweakJS Build Script
+ ExampleJS Build Script
  Copyright (c) 2013, XeoLabs
  All rights reserved.
  */
@@ -36,7 +36,7 @@
     process.argv.forEach(function (val, index, array) {
 
         if (val == "--help") {
-            sys.print('SceneJS TweakJS Build Script\n');
+            sys.print('SceneJS ExampleJS Build Script\n');
             sys.print('Usage:\n');
             sys.print('build [type] [options]\n');
             sys.print('eg building scripts without XXX support,\n build SCRIPTS --without-XXX\n');
@@ -98,9 +98,9 @@
         core:[
             "licenses/license-header.js",
             "js/api/map.js",
-            "js/api/tweakjsAPI.js",
+            "js/api/examplejsAPI.js",
             "js/api/component.js",
-            "js/api/tweakjs.js"
+            "js/api/example.js"
         ]
     };
 
@@ -164,8 +164,8 @@
                             if (files.length > 0) {
                                 sys.print("Writing built API library: examplejs.js\n");
                                 var outputStr = output.join("");
-                                fs.writeFileSync(versionDir + "/tweakjs.js", outputStr);
-                                fs.writeFileSync(latestDir + "/tweakjs.js", outputStr);
+                                fs.writeFileSync(versionDir + "/example.js", outputStr);
+                                fs.writeFileSync(latestDir + "/example.js", outputStr);
                             }
                         });
                 });

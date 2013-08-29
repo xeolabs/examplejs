@@ -1,5 +1,5 @@
 /*
- * TweakJS
+ * ExampleJS
  * http://examplejs.org/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://examplejs.org/license
@@ -15,7 +15,7 @@
  * clash with internally generated IDs, which are numbers.
  * @private
  */
-var TweakJS_Map = function (items, _baseId) {
+var ExampleJS_Map = function (items, _baseId) {
 
     /**
      * @property Items in this map
@@ -67,17 +67,17 @@ var TweakJS_Map = function (items, _baseId) {
  * @private
  * @type {Object}
  */
-var TweakJSAPI = {
+var ExampleJSAPI = {
 };
 
 // Tests if the given object is an array
- TweakJSAPI._isArray = function (testObject) {
+ ExampleJSAPI._isArray = function (testObject) {
     return testObject && !(testObject.propertyIsEnumerable('length'))
         && typeof testObject === 'object' && typeof testObject.length === 'number';
 };
 
 // Inheritance helper
-TweakJSAPI._extend = function (childObj, parentObj) {
+ExampleJSAPI._extend = function (childObj, parentObj) {
     var tmpObj = function () {
     };
     tmpObj.prototype = parentObj.prototype;
@@ -86,7 +86,7 @@ TweakJSAPI._extend = function (childObj, parentObj) {
 };
 
 // Add properties of o to o2, overwriting them on o2 if already there
-TweakJSAPI._apply = function (o, o2) {
+ExampleJSAPI._apply = function (o, o2) {
     for (var name in o) {
         if (o.hasOwnProperty(name)) {
             o2[name] = o[name];
@@ -96,7 +96,7 @@ TweakJSAPI._apply = function (o, o2) {
 };
 
 // Add properties of o to o2 where undefined or null on o2
- TweakJSAPI._applyIf = function (o, o2) {
+ ExampleJSAPI._applyIf = function (o, o2) {
     for (var name in o) {
         if (o.hasOwnProperty(name)) {
             if (o2[name] == undefined || o2[name] == null) {
@@ -106,18 +106,18 @@ TweakJSAPI._apply = function (o, o2) {
     }
     return o2;
 };/**
- * @class Base class for TweakJS API components.
+ * @class Base class for ExampleJS API components.
  * <p>Provides methods for listening to data changes on components: {@link #on} is used to listen for
  * data changes at a particular location, while {@link #off} is used to stop receiving updates.</p>
  * @constructor
  */
-TweakJSAPI.Component = function () {
+ExampleJSAPI.Component = function () {
 };
 
-TweakJSAPI.Component.prototype = {
+ExampleJSAPI.Component.prototype = {
 
     _init:function () {
-        this._handleMap = new TweakJS_Map(); // Subscription handle pool
+        this._handleMap = new ExampleJS_Map(); // Subscription handle pool
         this._locSubs = {}; // A [handle -> callback] map for each location name
         this._handleLocs = {}; // Maps handles to loc names
         this._locPubs = {}; // Maps locations to publications
@@ -151,7 +151,7 @@ TweakJSAPI.Component.prototype = {
     /**
      * Listen for data changes at a particular location.
      *
-     * <p>This is the primary way to read data from TweakJS. Your callback will be triggered for
+     * <p>This is the primary way to read data from ExampleJS. Your callback will be triggered for
      * the initial data and again whenever the data changes. Use {@link #off} to stop receiving updates.</p>
      *
      * <p>The callback is be called with this Component as scope.</p>
@@ -220,7 +220,7 @@ TweakJSAPI.Component.prototype = {
  * @param cfg
  * @constructor
  */
-var TweakJS = function (cfg) {
+var ExampleJS = function (cfg) {
 
     this._init(); // Super constructor
 
@@ -230,8 +230,8 @@ var TweakJS = function (cfg) {
     this._iframe.style.width = "100%";
     document.body.appendChild(this._iframe);
 
-    this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
-//    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
+//    this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
+    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
 
     // True once connected
     this._connected = false;
@@ -247,13 +247,13 @@ var TweakJS = function (cfg) {
 };
 
 // Extends framework base component
-TweakJSAPI._extend(TweakJS, TweakJSAPI.Component);
+ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
 
 /**
  * Updates this example portal
  * @param params
  */
-TweakJS.prototype.set = function (params) {
+ExampleJS.prototype.set = function (params) {
     var call = this._apply({ call:"configure" }, params);
     if (!this._connected) {
         // Buffer until ready
@@ -268,7 +268,7 @@ TweakJS.prototype.set = function (params) {
  * @param params
  * @private
  */
-TweakJS.prototype._send = function (params) {
+ExampleJS.prototype._send = function (params) {
     this._iframe.contentWindow.postMessage(JSON.stringify(params), "*");
 };
 
@@ -276,7 +276,7 @@ TweakJS.prototype._send = function (params) {
  * Merges objects
  * @private
  */
-TweakJS.prototype._apply = function (o, o2) {
+ExampleJS.prototype._apply = function (o, o2) {
     for (var name in o) {
         if (o.hasOwnProperty(name)) {
             o2[name] = o[name];
@@ -289,7 +289,7 @@ TweakJS.prototype._apply = function (o, o2) {
  * Requests connection with page
  * @private
  */
-TweakJS.prototype._connect = function () {
+ExampleJS.prototype._connect = function () {
 
     var self = this;
 
@@ -341,7 +341,7 @@ TweakJS.prototype._connect = function () {
  * Sends calls that were buffered while not connected
  * @private
  */
-TweakJS.prototype._sendBufferedCalls = function () {
+ExampleJS.prototype._sendBufferedCalls = function () {
     while (this._callBuffer.length > 0) {
         this._send(this._callBuffer.pop());
     }

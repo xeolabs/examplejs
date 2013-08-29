@@ -1,5 +1,5 @@
 /*
- * TweakJS
+ * ExampleJS
  * http://examplejs.org/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://examplejs.org/license

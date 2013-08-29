@@ -3,7 +3,7 @@
  * @param cfg
  * @constructor
  */
-var TweakJS = function (cfg) {
+var ExampleJS = function (cfg) {
 
     this._init(); // Super constructor
 
@@ -13,8 +13,8 @@ var TweakJS = function (cfg) {
     this._iframe.style.width = "100%";
     document.body.appendChild(this._iframe);
 
-    this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
-//    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
+//    this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
+    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
 
     // True once connected
     this._connected = false;
@@ -30,13 +30,13 @@ var TweakJS = function (cfg) {
 };
 
 // Extends framework base component
-TweakJSAPI._extend(TweakJS, TweakJSAPI.Component);
+ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
 
 /**
  * Updates this example portal
  * @param params
  */
-TweakJS.prototype.set = function (params) {
+ExampleJS.prototype.set = function (params) {
     var call = this._apply({ call:"configure" }, params);
     if (!this._connected) {
         // Buffer until ready
@@ -51,7 +51,7 @@ TweakJS.prototype.set = function (params) {
  * @param params
  * @private
  */
-TweakJS.prototype._send = function (params) {
+ExampleJS.prototype._send = function (params) {
     this._iframe.contentWindow.postMessage(JSON.stringify(params), "*");
 };
 
@@ -59,7 +59,7 @@ TweakJS.prototype._send = function (params) {
  * Merges objects
  * @private
  */
-TweakJS.prototype._apply = function (o, o2) {
+ExampleJS.prototype._apply = function (o, o2) {
     for (var name in o) {
         if (o.hasOwnProperty(name)) {
             o2[name] = o[name];
@@ -72,7 +72,7 @@ TweakJS.prototype._apply = function (o, o2) {
  * Requests connection with page
  * @private
  */
-TweakJS.prototype._connect = function () {
+ExampleJS.prototype._connect = function () {
 
     var self = this;
 
@@ -124,7 +124,7 @@ TweakJS.prototype._connect = function () {
  * Sends calls that were buffered while not connected
  * @private
  */
-TweakJS.prototype._sendBufferedCalls = function () {
+ExampleJS.prototype._sendBufferedCalls = function () {
     while (this._callBuffer.length > 0) {
         this._send(this._callBuffer.pop());
     }

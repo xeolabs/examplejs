@@ -3,7 +3,7 @@
  * clash with internally generated IDs, which are numbers.
  * @private
  */
-var TweakJS_Map = function (items, _baseId) {
+var ExampleJS_Map = function (items, _baseId) {
 
     /**
      * @property Items in this map

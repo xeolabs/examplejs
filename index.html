@@ -20,9 +20,6 @@
     <link href="css/prettify.css" rel="stylesheet"/>
     <script src="lib/prettify.js"></script>
 
-    <!-- TODO: Make 3rd party dependencies a configurable -->
-    <!--<script src="http://xeolabs.github.io/scenejs/api/latest/scenejs.js"></script>-->
-    <script src="../scenejs3.0/api/latest/scenejs.js"></script>
 
     <style>
 
@@ -314,7 +311,7 @@ jQuery(document).ready(
 
             var client;
 
-            // Handle messages from TweakJS client
+            // Handle messages from ExampleJS client
             addEventListener("message",
                     function (event) {
                         var data = JSON.parse(event.data);

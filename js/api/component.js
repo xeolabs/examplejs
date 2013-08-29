@@ -1,16 +1,16 @@
 /**
- * @class Base class for TweakJS API components.
+ * @class Base class for ExampleJS API components.
  * <p>Provides methods for listening to data changes on components: {@link #on} is used to listen for
  * data changes at a particular location, while {@link #off} is used to stop receiving updates.</p>
  * @constructor
  */
-TweakJSAPI.Component = function () {
+ExampleJSAPI.Component = function () {
 };
 
-TweakJSAPI.Component.prototype = {
+ExampleJSAPI.Component.prototype = {
 
     _init:function () {
-        this._handleMap = new TweakJS_Map(); // Subscription handle pool
+        this._handleMap = new ExampleJS_Map(); // Subscription handle pool
         this._locSubs = {}; // A [handle -> callback] map for each location name
         this._handleLocs = {}; // Maps handles to loc names
         this._locPubs = {}; // Maps locations to publications
@@ -44,7 +44,7 @@ TweakJSAPI.Component.prototype = {
     /**
      * Listen for data changes at a particular location.
      *
-     * <p>This is the primary way to read data from TweakJS. Your callback will be triggered for
+     * <p>This is the primary way to read data from ExampleJS. Your callback will be triggered for
      * the initial data and again whenever the data changes. Use {@link #off} to stop receiving updates.</p>
      *
      * <p>The callback is be called with this Component as scope.</p>
