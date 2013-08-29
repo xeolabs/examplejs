@@ -231,13 +231,18 @@ var ExampleJS = function (cfg) {
     document.body.appendChild(this._iframe);
 
     this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
-//    this._iframe.src = "/home/lindsay/xeolabs/projects/examplejs/index.html";
 
     // True once connected
     this._connected = false;
 
     // Calls buffered while not connected
     this._callBuffer = [];
+
+    // Initially selected tags
+    cfg.tags = this._getURLTags();
+
+    // Initially selected page
+    cfg.page = this._getURLPage();
 
     // Buffer initial config call
     this.set(cfg);
@@ -248,6 +253,36 @@ var ExampleJS = function (cfg) {
 
 // Extends framework base component
 ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
+
+ExampleJSAPI.prototype._getURLTags = function () {
+    var tags = {};
+    var params = this._getSearchParams();
+    var tagListStr = params.tags;
+    if (tagListStr) {
+        var tagList = tagListStr.split(",");
+        for (var i = 0, len = tagList.length; i < len; i++) {
+            tags[tagList[i]] = true;
+        }
+    }
+    return tags;
+};
+
+ExampleJSAPI.prototype._getURLPage = function () {
+    var params = this._getSearchParams();
+    return params.page;
+};
+
+ExampleJSAPI.prototype._getSearchParams = function () {
+    var searchParams = {};
+    var search = window.location.search.slice(1);
+    var params = search.split('&');
+    var tokens;
+    for (var i = 0, len = params.length; i < len; i++) {
+        tokens = params[i].split("=");
+        searchParams[tokens[0]] = tokens[1];
+    }
+    return searchParams;
+};
 
 /**
  * Updates this example portal
@@ -311,7 +346,7 @@ ExampleJS.prototype._connect = function () {
                     clearInterval(pConnect);
                     self._sendBufferedCalls();
                     self._connected = true;
-                    self._publish("connection", { connected: true });
+                    self._publish("connection", { connected:true });
                     break;
 
                 case "home":
@@ -346,8 +381,6 @@ ExampleJS.prototype._sendBufferedCalls = function () {
         this._send(this._callBuffer.pop());
     }
 };
-
-
 
 
 //// Gets tags off location hash
