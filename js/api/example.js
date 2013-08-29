@@ -27,6 +27,9 @@ var ExampleJS = function (cfg) {
     // Initially selected page
     cfg.page = this._getURLPage();
 
+    // Show code if specified on URL
+    cfg.showCode = this._getShowCode() || cfg.showCode;
+
     // Buffer initial config call
     this.set(cfg);
 
@@ -53,6 +56,11 @@ ExampleJS.prototype._getURLTags = function () {
 ExampleJS.prototype._getURLPage = function () {
     var params = this._getSearchParams();
     return params.page;
+};
+
+ExampleJS.prototype._getShowCode = function () {
+    var params = this._getSearchParams();
+    return params.showCode;
 };
 
 ExampleJS.prototype._getSearchParams = function () {
