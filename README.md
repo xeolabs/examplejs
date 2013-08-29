@@ -1,8 +1,8 @@
 Easily organise and share your API examples with this tag-searchable example browser.
 
-[![](images/examplejs.png)](http://scenejs.org/examples.html?tags=prims) | ![](images/examplejsCodeView.png)
+[![](images/examplejs.png)](http://scenejs.org/examples.html?page=teapotNodePrim) | ![](images/examplejsCodeView.png)
 ----|----
-[SceneJS example](http://scenejs.org/examples.html?tags=prims)  | SceneJS example code view
+A [SceneJS example](http://scenejs.org/examples.html?page=teapotNodePrim)  | A SceneJS example with code view
 
 ### 1. Get your example pages together
 Start with a bunch of HTML example pages that demo the various features of your API, like [these examples for SceneJS 3.1](https://github.com/xeolabs/scenejs/tree/V3.1/examples/ex). 
