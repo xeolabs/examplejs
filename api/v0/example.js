@@ -252,7 +252,7 @@ var ExampleJS = function (cfg) {
 };
 
 // Extends framework base component
-ExampleJS._extend(ExampleJS, ExampleJSAPI.Component);
+ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
 
 ExampleJS.prototype._getURLTags = function () {
     var tags = {};
