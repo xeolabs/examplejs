@@ -35,9 +35,9 @@ var ExampleJS = function (cfg) {
 };
 
 // Extends framework base component
-ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
+ExampleJS._extend(ExampleJS, ExampleJSAPI.Component);
 
-ExampleJSAPI.prototype._getURLTags = function () {
+ExampleJS.prototype._getURLTags = function () {
     var tags = {};
     var params = this._getSearchParams();
     var tagListStr = params.tags;
@@ -50,12 +50,12 @@ ExampleJSAPI.prototype._getURLTags = function () {
     return tags;
 };
 
-ExampleJSAPI.prototype._getURLPage = function () {
+ExampleJS.prototype._getURLPage = function () {
     var params = this._getSearchParams();
     return params.page;
 };
 
-ExampleJSAPI.prototype._getSearchParams = function () {
+ExampleJS.prototype._getSearchParams = function () {
     var searchParams = {};
     var search = window.location.search.slice(1);
     var params = search.split('&');
