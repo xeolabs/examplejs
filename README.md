@@ -38,6 +38,3 @@ License is GPL and MIT.
 
 I hope this enhances productivity for your project!
 
-Lindsay Kay,
-
-http://about.me/kaylindsay
