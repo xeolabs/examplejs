@@ -30,15 +30,49 @@ var ExampleJS = function (cfg) {
     // Show code if specified on URL
     cfg.showCode = this._getShowCode() || cfg.showCode;
 
-    // Buffer initial config call
-    this.set(cfg);
+    if (typeof cfg.index == "string") {
 
-    // Request connection
-    this._connect();
+        // JSON index provided as file path
+
+        this._loadIndex(cfg.index,
+            function (index) {
+
+                cfg.index = index;
+
+                // Buffer initial config call
+                this.set(cfg);
+
+                // Request connection
+                this._connect();
+            });
+    } else {
+
+        // JSON index provided as object
+
+        // Buffer initial config call
+        this.set(cfg);
+
+        // Request connection
+        this._connect();
+    }
 };
 
 // Extends framework base component
 ExampleJSAPI._extend(ExampleJS, ExampleJSAPI.Component);
+
+
+ExampleJS.prototype._loadIndex = function (path, ok, error) {
+    var req = new XMLHttpRequest;
+    req.overrideMimeType("application/json");
+    req.open('GET', path, true);
+    var target = this;
+    req.onload = function () {
+        if (req.status == 200) {
+            ok(JSON.parse(req.responseText));
+        }
+    };
+    req.send(null);
+};
 
 ExampleJS.prototype._getURLTags = function () {
     var tags = {};
