@@ -10,7 +10,8 @@
  * http://www.mrdoob.com/projects/htmleditor/
  * The MIT License
  * Copyright (c) 2012 Mr.doob
- *//**
+ */
+/**
  * @class Generic map of IDs to items - can generate own IDs or accept given IDs. IDs should be strings in order to not
  * clash with internally generated IDs, which are numbers.
  * @private
@@ -63,7 +64,8 @@ var ExampleJS_Map = function (items, _baseId) {
         delete this.items[id];
         return item;
     };
-};/**
+};
+/**
  * @private
  * @type {Object}
  */
@@ -71,7 +73,7 @@ var ExampleJSAPI = {
 };
 
 // Tests if the given object is an array
- ExampleJSAPI._isArray = function (testObject) {
+ExampleJSAPI._isArray = function (testObject) {
     return testObject && !(testObject.propertyIsEnumerable('length'))
         && typeof testObject === 'object' && typeof testObject.length === 'number';
 };
@@ -96,7 +98,7 @@ ExampleJSAPI._apply = function (o, o2) {
 };
 
 // Add properties of o to o2 where undefined or null on o2
- ExampleJSAPI._applyIf = function (o, o2) {
+ExampleJSAPI._applyIf = function (o, o2) {
     for (var name in o) {
         if (o.hasOwnProperty(name)) {
             if (o2[name] == undefined || o2[name] == null) {
@@ -105,7 +107,8 @@ ExampleJSAPI._apply = function (o, o2) {
         }
     }
     return o2;
-};/**
+};
+/**
  * @class Base class for ExampleJS API components.
  * <p>Provides methods for listening to data changes on components: {@link #on} is used to listen for
  * data changes at a particular location, while {@link #off} is used to stop receiving updates.</p>
@@ -215,7 +218,8 @@ ExampleJSAPI.Component.prototype = {
     log:function (msg) {
         console.log(msg); // TODO: log with Component path
     }
-};/**
+};
+/**
  *
  * @param cfg
  * @constructor
@@ -230,7 +234,7 @@ var ExampleJS = function (cfg) {
     this._iframe.style.width = "100%";
     document.body.appendChild(this._iframe);
 
-    this._iframe.src = "http://xeolabs.github.io/examplejs/index.html";
+    this._iframe.src = (cfg.exampleJSHome || "http://xeolabs.github.io/examplejs") + "/index.html";
 
     // True once connected
     this._connected = false;
