@@ -17,6 +17,9 @@ Make a [JSON index](https://github.com/xeolabs/examplejs/wiki/ExampleJS-Index-Fi
 Make an HTML page which contains an instance of ExampleJS, linking to ExampleJS library and the JSON index, like
 [this one for SceneJS](https://github.com/xeolabs/scenejs/blob/V3.1/examples.html) - use that as a template for your own catalogue page.
 
+* Security error because your catalogue page is on HTTP but the ExampleJS repo is served over HTTPS?
+[Try serving ExampleJS yourself](https://github.com/xeolabs/examplejs/wiki/Serving-ExampleJS-Yourself).
+
 ### 4. Load that catalogue page
 Le voilà! Examples nicely laid out and indexed with searchable tags.
 
